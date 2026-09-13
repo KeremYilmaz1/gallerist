@@ -3,6 +3,7 @@ package com.KeremYilmaz.galerist.starter.service.impl;
 import com.KeremYilmaz.galerist.starter.dto.AuthRequest;
 import com.KeremYilmaz.galerist.starter.dto.AuthResponse;
 import com.KeremYilmaz.galerist.starter.dto.DtoUser;
+import com.KeremYilmaz.galerist.starter.dto.RefreshTokenRequest;
 import com.KeremYilmaz.galerist.starter.entity.RefreshToken;
 import com.KeremYilmaz.galerist.starter.entity.User;
 import com.KeremYilmaz.galerist.starter.exception.BaseException;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -90,5 +92,26 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         } catch (Exception e) {
             throw new BaseException(new ErrorMessage(MessageType.USERNAME_OR_PASSWORD_INVALID , e.getMessage()));
         }
+    }
+
+    public boolean isValidRefreshToken(Date expiredDate){
+        return new Date().before(expiredDate);
+    }
+
+    @Override
+    public AuthResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByRefreshToken(refreshTokenRequest.getRefreshToken());
+        if(refreshToken.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.REFRESH_TOKEN_NOT_FOUND , refreshTokenRequest.getRefreshToken()));
+        }
+        if(!isValidRefreshToken(refreshToken.get().getExpiredDate())){
+            throw new BaseException(new ErrorMessage(MessageType.REFRESH_TOKEN_IS_EXPIRED , refreshTokenRequest.getRefreshToken()));
+        }
+
+        User user = refreshToken.get().getUser();
+        String accessTokenToSave = jwtService.generateToken(user);
+        RefreshToken refreshTokenToSave = createRefreshToken(user);
+        refreshTokenRepository.save(refreshTokenToSave);
+        return new AuthResponse(accessTokenToSave,refreshTokenToSave.getRefreshToken());
     }
 }
