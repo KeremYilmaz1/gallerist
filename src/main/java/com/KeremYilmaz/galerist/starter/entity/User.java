@@ -28,9 +28,4 @@ public class User extends BaseEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
-
-    @Override
-    public String getUsername() {
-        return "";
-    }
 }

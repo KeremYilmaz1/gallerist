@@ -15,7 +15,7 @@ public class DtoAddressIU {
     private String district;
 
     @NotEmpty
-    private String neihgborhood;
+    private String neighborhood;
 
     @NotEmpty
     private String street;
