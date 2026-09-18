@@ -3,7 +3,7 @@ package com.KeremYilmaz.galerist.starter.service.impl;
 import com.KeremYilmaz.galerist.starter.dto.DtoAccount;
 import com.KeremYilmaz.galerist.starter.dto.DtoAddress;
 import com.KeremYilmaz.galerist.starter.dto.DtoCustomer;
-import com.KeremYilmaz.galerist.starter.dto.DtoCustomerIU;
+import com.KeremYilmaz.galerist.starter.dto.IU.DtoCustomerIU;
 import com.KeremYilmaz.galerist.starter.entity.Account;
 import com.KeremYilmaz.galerist.starter.entity.Address;
 import com.KeremYilmaz.galerist.starter.entity.Customer;

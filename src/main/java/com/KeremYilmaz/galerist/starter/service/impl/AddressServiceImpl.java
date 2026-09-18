@@ -1,7 +1,7 @@
 package com.KeremYilmaz.galerist.starter.service.impl;
 
 import com.KeremYilmaz.galerist.starter.dto.DtoAddress;
-import com.KeremYilmaz.galerist.starter.dto.DtoAddressIU;
+import com.KeremYilmaz.galerist.starter.dto.IU.DtoAddressIU;
 import com.KeremYilmaz.galerist.starter.entity.Address;
 import com.KeremYilmaz.galerist.starter.repository.AddressRepository;
 import com.KeremYilmaz.galerist.starter.service.IAddressService;

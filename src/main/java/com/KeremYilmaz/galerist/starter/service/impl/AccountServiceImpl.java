@@ -1,8 +1,7 @@
 package com.KeremYilmaz.galerist.starter.service.impl;
 
 import com.KeremYilmaz.galerist.starter.dto.DtoAccount;
-import com.KeremYilmaz.galerist.starter.dto.DtoAccountIU;
-import com.KeremYilmaz.galerist.starter.dto.DtoAddressIU;
+import com.KeremYilmaz.galerist.starter.dto.IU.DtoAccountIU;
 import com.KeremYilmaz.galerist.starter.entity.Account;
 import com.KeremYilmaz.galerist.starter.repository.AccountRepository;
 import com.KeremYilmaz.galerist.starter.service.IAccountService;

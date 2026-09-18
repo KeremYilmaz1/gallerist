@@ -2,7 +2,7 @@ package com.KeremYilmaz.galerist.starter.controller.impl;
 
 import com.KeremYilmaz.galerist.starter.controller.IRestCustomerController;
 import com.KeremYilmaz.galerist.starter.dto.DtoCustomer;
-import com.KeremYilmaz.galerist.starter.dto.DtoCustomerIU;
+import com.KeremYilmaz.galerist.starter.dto.IU.DtoCustomerIU;
 import com.KeremYilmaz.galerist.starter.service.ICustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

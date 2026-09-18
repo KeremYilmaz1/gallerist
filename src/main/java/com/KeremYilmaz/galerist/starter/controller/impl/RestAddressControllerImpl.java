@@ -2,7 +2,7 @@ package com.KeremYilmaz.galerist.starter.controller.impl;
 
 import com.KeremYilmaz.galerist.starter.controller.IRestAddressController;
 import com.KeremYilmaz.galerist.starter.dto.DtoAddress;
-import com.KeremYilmaz.galerist.starter.dto.DtoAddressIU;
+import com.KeremYilmaz.galerist.starter.dto.IU.DtoAddressIU;
 import com.KeremYilmaz.galerist.starter.service.IAddressService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

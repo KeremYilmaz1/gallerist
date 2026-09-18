@@ -1,9 +1,6 @@
-package com.KeremYilmaz.galerist.starter.dto;
+package com.KeremYilmaz.galerist.starter.dto.IU;
 
 import com.KeremYilmaz.galerist.starter.enums.CurrencyType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

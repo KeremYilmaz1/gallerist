@@ -1,4 +1,4 @@
-package com.KeremYilmaz.galerist.starter.dto;
+package com.KeremYilmaz.galerist.starter.dto.IU;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
