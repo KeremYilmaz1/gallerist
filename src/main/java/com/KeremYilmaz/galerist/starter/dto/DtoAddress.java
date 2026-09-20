@@ -11,7 +11,7 @@ public class DtoAddress extends BaseDto{
 
     private String district;
 
-    private String neihgborhood;
+    private String neighborhood;
 
     private String street;
 }
