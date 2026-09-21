@@ -10,6 +10,7 @@ public enum MessageType {
     GENERAL_EXCEPTION("9999" , "Genel bir hata oluştu"),
     REFRESH_TOKEN_NOT_FOUND("1008" , "refresh token bulunamadı"),
     REFRESH_TOKEN_IS_EXPIRED("1009" , "refresh token'in süresi doldu"),
+    CURRENCY_RATE_ERROR_OCCURED("1010" , "döviz kuru alınamadı"),
     USERNAME_OR_PASSWORD_INVALID("1007" , "Kullanıcı adı yada şifre hatalı");
 
     private String code;
