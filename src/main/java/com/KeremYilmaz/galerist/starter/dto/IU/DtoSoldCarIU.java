@@ -7,6 +7,8 @@ import com.KeremYilmaz.galerist.starter.entity.Car;
 import com.KeremYilmaz.galerist.starter.entity.Customer;
 import com.KeremYilmaz.galerist.starter.entity.Gallerist;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +16,12 @@ import lombok.Setter;
 @Setter
 public class DtoSoldCarIU {
 
+    @NotNull
     private Long customerId;
+
+    @NotNull
     private Long galleristId;
+
+    @NotNull
     private Long carId;
 }

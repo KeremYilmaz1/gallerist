@@ -12,6 +12,7 @@ public enum MessageType {
     REFRESH_TOKEN_IS_EXPIRED("1009" , "refresh token'in süresi doldu"),
     CURRENCY_RATE_ERROR_OCCURED("1010" , "döviz kuru alınamadı"),
     CUSTOMER_AMOUNT_IS_NOT_ENOUGH("1011" , "müşterinin parası yeterli değil"),
+    CAR_IS_ALREADY_SOLD("1012" , "araba zaten satılmış"),
     USERNAME_OR_PASSWORD_INVALID("1007" , "Kullanıcı adı yada şifre hatalı");
 
     private String code;

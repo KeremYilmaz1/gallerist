@@ -30,9 +30,8 @@ public class AccountServiceImpl implements IAccountService {
         Account account = createAccount(dtoAccountIU);
         DtoAccount dtoAccount = new DtoAccount();
 
-        BeanUtils.copyProperties(account,dtoAccount);
-
         accountRepository.save(account);
+        BeanUtils.copyProperties(account,dtoAccount);
         return dtoAccount;
     }
 }

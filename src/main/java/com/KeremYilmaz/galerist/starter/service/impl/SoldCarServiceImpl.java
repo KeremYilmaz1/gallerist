@@ -1,21 +1,20 @@
 package com.KeremYilmaz.galerist.starter.service.impl;
 
-import com.KeremYilmaz.galerist.starter.dto.CurrencyRateResponse;
-import com.KeremYilmaz.galerist.starter.dto.DtoSoldCar;
+import com.KeremYilmaz.galerist.starter.dto.*;
 import com.KeremYilmaz.galerist.starter.dto.IU.DtoSoldCarIU;
-import com.KeremYilmaz.galerist.starter.entity.Account;
-import com.KeremYilmaz.galerist.starter.entity.Car;
-import com.KeremYilmaz.galerist.starter.entity.Customer;
-import com.KeremYilmaz.galerist.starter.entity.Gallerist;
+import com.KeremYilmaz.galerist.starter.entity.*;
+import com.KeremYilmaz.galerist.starter.enums.CarStatusType;
 import com.KeremYilmaz.galerist.starter.exception.BaseException;
 import com.KeremYilmaz.galerist.starter.exception.ErrorMessage;
 import com.KeremYilmaz.galerist.starter.exception.MessageType;
 import com.KeremYilmaz.galerist.starter.repository.CarRepository;
 import com.KeremYilmaz.galerist.starter.repository.CustomerRepository;
 import com.KeremYilmaz.galerist.starter.repository.GalleristRepository;
+import com.KeremYilmaz.galerist.starter.repository.SoldCarRepository;
 import com.KeremYilmaz.galerist.starter.service.ICurrencyRatesService;
 import com.KeremYilmaz.galerist.starter.service.ISoldCarService;
 import com.KeremYilmaz.galerist.starter.utils.DateUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +36,14 @@ public class SoldCarServiceImpl implements ISoldCarService {
     private GalleristRepository galleristRepository;
 
     @Autowired
+    private SoldCarRepository soldCarRepository;
+
+    @Autowired
     private ICurrencyRatesService currencyRatesService;
 
 
     public BigDecimal convertCustomerAmountToUSD(Customer customer) {
-        CurrencyRateResponse currencyRatesResponse = currencyRatesService.getCurrencyRates(DateUtils.getCurrentDate(new Date()), DateUtils.getCurrentDate(new Date()));
+        CurrencyRateResponse currencyRatesResponse = currencyRatesService.getCurrencyRates("25-09-2026" , "25-09-2026"); //DateUtils.getCurrentDate(new Date()), DateUtils.getCurrentDate(new Date())
         BigDecimal usd = new BigDecimal(currencyRatesResponse.getItems().get(0).getUsd());
 
         BigDecimal customerUSDAmount = customer.getAccount().getAmount().divide(usd, 2, RoundingMode.HALF_UP);
@@ -66,12 +68,81 @@ public class SoldCarServiceImpl implements ISoldCarService {
         return false;
     }
 
+    public boolean checkCarStatus(Long carId){
+
+        Optional<Car> optCar = carRepository.findById(carId);
+        if(optCar.isPresent() && optCar.get().getCarStatusType().name().equals(CarStatusType.SOLD.name())){
+           return false;
+        }
+        return true;
+    }
+
+    public BigDecimal remaningCustomerAccount(Customer customer , Car car){
+
+        BigDecimal customerAmountToUSD = convertCustomerAmountToUSD(customer);
+        BigDecimal customerRemainingUSDAmount = customerAmountToUSD.subtract(car.getPrice());
+
+        CurrencyRateResponse currencyRateResponse = currencyRatesService.getCurrencyRates(DateUtils.getCurrentDate(new Date()), DateUtils.getCurrentDate(new Date()));
+        BigDecimal usd = new BigDecimal(currencyRateResponse.getItems().get(0).getUsd());
+
+        return customerRemainingUSDAmount.multiply(usd);
+    }
+
 
     @Override
     public DtoSoldCar buyCar(DtoSoldCarIU dtoSoldCarIU) {
+
+        if (!checkCarStatus(dtoSoldCarIU.getCarId())){
+            throw new BaseException(new ErrorMessage(MessageType.CAR_IS_ALREADY_SOLD , dtoSoldCarIU.getCarId().toString()));
+        }
+
         if(!checkAmount(dtoSoldCarIU)){
             throw new BaseException(new ErrorMessage(MessageType.CUSTOMER_AMOUNT_IS_NOT_ENOUGH , dtoSoldCarIU.getCustomerId().toString()));
         }
-        return null;
+
+        SoldCar savedSoldCar = soldCarRepository.save(createSoldCar(dtoSoldCarIU));
+
+        Car car = savedSoldCar.getCar();
+        car.setCarStatusType(CarStatusType.SOLD);
+
+        carRepository.save(car); // save metodu eğer kayıt yoksa yeni kayıt oluşturur eğer varsa üzerine yazar burada oluşturma değil update için kullandım
+
+
+        Customer customer = savedSoldCar.getCustomer();
+        customer.getAccount().setAmount(remaningCustomerAccount(customer , car));
+
+        customerRepository.save(customer);
+        return toDTO(savedSoldCar);
+    }
+
+    private SoldCar createSoldCar(DtoSoldCarIU dtoSoldCarIU){
+        SoldCar soldCar = new SoldCar();
+        soldCar.setCreateTime(new Date());
+
+        soldCar.setCustomer(customerRepository.findById(dtoSoldCarIU.getCustomerId()).orElse(null));
+        soldCar.setGallerist(galleristRepository.findById(dtoSoldCarIU.getCarId()).orElse(null));
+        soldCar.setCar(carRepository.findById(dtoSoldCarIU.getCarId()).orElse(null));
+
+        return soldCar;
+    }
+
+
+    public DtoSoldCar toDTO(SoldCar soldCar){  //Üst taraf çok kalabalıklaştığı için dto conversion işlemini burada yaptım
+
+        DtoGallerist dtoGallerist = new DtoGallerist();
+        DtoCar dtoCar = new DtoCar();
+        DtoCustomer dtoCustomer = new DtoCustomer();
+
+        DtoSoldCar dtoSoldCar = new DtoSoldCar();
+
+        BeanUtils.copyProperties(soldCar , dtoSoldCar);
+        BeanUtils.copyProperties(soldCar.getCar() , dtoCar);
+        BeanUtils.copyProperties(soldCar.getCustomer() , dtoCustomer);
+        BeanUtils.copyProperties(soldCar.getGallerist() , dtoGallerist);
+
+        dtoSoldCar.setDtoCar(dtoCar);
+        dtoSoldCar.setDtoGallerist(dtoGallerist);
+        dtoSoldCar.setDtoCustomer(dtoCustomer);
+        return dtoSoldCar;
     }
 }
