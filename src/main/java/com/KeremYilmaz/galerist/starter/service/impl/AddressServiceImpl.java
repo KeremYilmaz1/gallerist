@@ -7,6 +7,8 @@ import com.KeremYilmaz.galerist.starter.exception.BaseException;
 import com.KeremYilmaz.galerist.starter.exception.ErrorMessage;
 import com.KeremYilmaz.galerist.starter.exception.MessageType;
 import com.KeremYilmaz.galerist.starter.repository.AddressRepository;
+import com.KeremYilmaz.galerist.starter.repository.CustomerRepository;
+import com.KeremYilmaz.galerist.starter.repository.GalleristRepository;
 import com.KeremYilmaz.galerist.starter.service.IAddressService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,12 @@ public class AddressServiceImpl implements IAddressService {
 
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private GalleristRepository galleristRepository;
 
 
     private Address createAddress(DtoAddressIU dtoAddressIU){
@@ -46,8 +54,13 @@ public class AddressServiceImpl implements IAddressService {
     public boolean deleteAddress(Long id) {
         Optional<Address> optionalAddress = addressRepository.findById(id);
         if(optionalAddress.isEmpty()){
-            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , ""));
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , id.toString()));
         }
+
+        if(customerRepository.existsByAddressId(id) || galleristRepository.existsByAddressId(id)){
+            throw new BaseException(new ErrorMessage(MessageType.ADDRESS_IN_USE , id.toString()));
+        }
+
         addressRepository.delete(optionalAddress.get());
         return true;
     }

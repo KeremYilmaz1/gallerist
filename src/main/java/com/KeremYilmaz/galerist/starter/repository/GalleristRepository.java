@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GalleristRepository extends JpaRepository<Gallerist,Long> {
+    boolean existsByAddressId(Long addressId);
 }
