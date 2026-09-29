@@ -120,7 +120,7 @@ public class SoldCarServiceImpl implements ISoldCarService {
         soldCar.setCreateTime(new Date());
 
         soldCar.setCustomer(customerRepository.findById(dtoSoldCarIU.getCustomerId()).orElse(null));
-        soldCar.setGallerist(galleristRepository.findById(dtoSoldCarIU.getCarId()).orElse(null));
+        soldCar.setGallerist(galleristRepository.findById(dtoSoldCarIU.getGalleristId()).orElse(null));
         soldCar.setCar(carRepository.findById(dtoSoldCarIU.getCarId()).orElse(null));
 
         return soldCar;
