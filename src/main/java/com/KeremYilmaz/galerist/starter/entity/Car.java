@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Car extends BaseEntity{
+    @Column(unique = true , nullable = false)
     private String plate;
 
     private String brand;

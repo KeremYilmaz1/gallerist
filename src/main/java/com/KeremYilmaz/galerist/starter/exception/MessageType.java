@@ -14,6 +14,8 @@ public enum MessageType {
     CUSTOMER_AMOUNT_IS_NOT_ENOUGH("1011" , "müşterinin parası yeterli değil"),
     CAR_IS_ALREADY_SOLD("1012" , "araba zaten satılmış"),
     ADDRESS_IN_USE("1013" , "adres kullanım içerisinde silinemez"),
+    PLATE_ALREADY_EXISTS("1014" , "bu plakaya ait farklı bir araba var"),
+    CAR_IN_USE("1015" , "Araç kullanımda olduğu için silinemez"),
     USERNAME_OR_PASSWORD_INVALID("1007" , "Kullanıcı adı yada şifre hatalı");
 
     private String code;
