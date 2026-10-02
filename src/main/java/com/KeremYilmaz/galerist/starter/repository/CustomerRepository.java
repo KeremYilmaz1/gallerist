@@ -7,4 +7,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer,Long> {
     boolean existsByAddressId(Long addressId);
+
+    boolean existsByAccountId(Long accountId);
+
+    boolean existsByAccountIdAndIdNot(Long accountId, Long id);
+
+    boolean existsByTcknAndIdNot(String tckn, Long id);
+
+
 }

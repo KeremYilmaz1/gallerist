@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SoldCarRepository extends JpaRepository<SoldCar , Long> {
     boolean existsByCarId(Long carId);
+
+    boolean existsByCustomerId(Long customerId);
 }
