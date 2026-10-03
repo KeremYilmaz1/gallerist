@@ -9,4 +9,6 @@ public interface SoldCarRepository extends JpaRepository<SoldCar , Long> {
     boolean existsByCarId(Long carId);
 
     boolean existsByCustomerId(Long customerId);
+
+    boolean existsByGalleristId(Long galleristId);
 }

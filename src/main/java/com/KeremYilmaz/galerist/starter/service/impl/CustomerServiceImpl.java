@@ -43,7 +43,7 @@ public class CustomerServiceImpl implements ICustomerService {
 
         Optional<Address> optionalAddress = addressRepository.findById(dtoCustomerIU.getAddressId());
         if(optionalAddress.isEmpty()){
-            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , dtoCustomerIU.getAccountId().toString()));
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , dtoCustomerIU.getAddressId().toString()));
         }
 
         Optional<Account> optionalAccount = accountRepository.findById(dtoCustomerIU.getAccountId());

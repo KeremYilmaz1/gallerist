@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GalleristCarRepository extends JpaRepository<GalleristCar, Long> {
     boolean existsByCarId(Long carId);
+
+    boolean existsByGalleristId(Long galleristId);
 }
