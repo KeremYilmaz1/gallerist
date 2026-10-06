@@ -19,9 +19,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class Account extends BaseEntity{
 
-    @Column(name = "account_no")
+    @Column(name = "account_no" , unique = true)
     private String accountNo;
 
+    @Column(unique = true)
     private String iban;
 
     private BigDecimal amount;

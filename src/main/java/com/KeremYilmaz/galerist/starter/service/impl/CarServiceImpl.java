@@ -48,6 +48,9 @@ public class CarServiceImpl implements ICarService {
 
     @Override
     public DtoCar saveCar(DtoCarIU dtoCarIU) {
+        if(carRepository.existsByPlate(dtoCarIU.getPlate())){
+            throw new BaseException(new ErrorMessage(MessageType.PLATE_ALREADY_EXISTS , dtoCarIU.getPlate()));
+        }
 
         Car createdCar = createCar(dtoCarIU);
         carRepository.save(createdCar);

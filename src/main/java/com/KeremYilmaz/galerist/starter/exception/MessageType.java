@@ -20,6 +20,10 @@ public enum MessageType {
     TCKN_ALREADY_EXISTS("1017" , "tc numarası başka bir hesap tarafından kullanım durumunda"),
     CUSTOMER_IN_USE("1018" , "customer kullanımda olduğu için silinemez"),
     GALLERIST_IN_USE("1019" , "gallerist kullanım içinde olduğu için silinemez"),
+    IBAN_IN_USE("1020" , "iban farklı bir hesap tarafından kullanılmakta"),
+    ACCOUNT_NO_IN_USE("1021" , "account no başka bir hesap tarafından kullanım durumundadır"),
+    INVALID_AMOUNT("1022" , "tutar geçersiz"),
+    INSUFFICIENT_BALANCE("1023", "Yetersiz bakiye"),
     USERNAME_OR_PASSWORD_INVALID("1007" , "Kullanıcı adı yada şifre hatalı");
 
     private String code;

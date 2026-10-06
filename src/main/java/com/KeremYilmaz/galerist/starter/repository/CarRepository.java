@@ -13,4 +13,6 @@ public interface CarRepository extends JpaRepository<Car,Long> {
     boolean existsByPlateAndIdNot(String plate, Long id);
 
     Page<Car> findByCarStatusType(CarStatusType carStatusType, Pageable pageable);
+
+    boolean existsByPlate(String plate);
 }
