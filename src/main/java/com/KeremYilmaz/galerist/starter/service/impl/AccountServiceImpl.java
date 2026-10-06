@@ -1,15 +1,19 @@
 package com.KeremYilmaz.galerist.starter.service.impl;
 
 import com.KeremYilmaz.galerist.starter.dto.DtoAccount;
+import com.KeremYilmaz.galerist.starter.dto.DtoAccountUpdate;
 import com.KeremYilmaz.galerist.starter.dto.IU.DtoAccountIU;
 import com.KeremYilmaz.galerist.starter.entity.Account;
 import com.KeremYilmaz.galerist.starter.exception.BaseException;
 import com.KeremYilmaz.galerist.starter.exception.ErrorMessage;
 import com.KeremYilmaz.galerist.starter.exception.MessageType;
 import com.KeremYilmaz.galerist.starter.repository.AccountRepository;
+import com.KeremYilmaz.galerist.starter.repository.CustomerRepository;
 import com.KeremYilmaz.galerist.starter.service.IAccountService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,9 @@ public class AccountServiceImpl implements IAccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     private Account createAccount(DtoAccountIU dtoAccountIU){
         Account account = new Account();
@@ -100,5 +107,58 @@ public class AccountServiceImpl implements IAccountService {
         BeanUtils.copyProperties(savedAccount,dtoAccount);
 
         return dtoAccount;
+    }
+
+    @Override
+    public DtoAccount updateAccount(Long id, DtoAccountUpdate dtoAccountUpdate) {
+        Optional<Account> optionalAccount = accountRepository.findById(id);
+        if (optionalAccount.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , id.toString()));
+        }
+
+        if(accountRepository.existsByAccountNoAndIdNot(dtoAccountUpdate.getAccountNo(), id)){
+            throw new BaseException(new ErrorMessage(MessageType.ACCOUNT_NO_IN_USE , dtoAccountUpdate.getAccountNo()));
+        }
+
+        if(accountRepository.existsByIbanAndIdNot(dtoAccountUpdate.getIban(), id)){
+            throw new BaseException(new ErrorMessage(MessageType.IBAN_IN_USE , dtoAccountUpdate.getIban()));
+        }
+
+        Account accountToBeUpdated = optionalAccount.get();
+        BeanUtils.copyProperties(dtoAccountUpdate , accountToBeUpdated);
+        Account savedAccount = accountRepository.save(accountToBeUpdated);
+
+        DtoAccount dtoAccount = new DtoAccount();
+        BeanUtils.copyProperties(savedAccount,dtoAccount);
+
+        return dtoAccount;
+    }
+
+    @Override
+    public boolean deleteAccount(Long id) {
+        Optional<Account> optionalAccount = accountRepository.findById(id);
+        if (optionalAccount.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , id.toString()));
+        }
+
+        if(customerRepository.existsByAccountId(id)){
+            throw new BaseException(new ErrorMessage(MessageType.ACCOUNT_IN_USE , id.toString()));
+        }
+
+        accountRepository.delete(optionalAccount.get());
+        return true;
+    }
+
+    @Override
+    public Page<DtoAccount> findAllPageable(Pageable pageable) {
+        Page<Account> accountPage = accountRepository.findAll(pageable);
+
+        Page<DtoAccount> dtoAccountPage = accountPage.map(account -> {
+            DtoAccount dtoAccount = new DtoAccount();
+            BeanUtils.copyProperties(account, dtoAccount);
+            return dtoAccount;
+        });
+
+        return dtoAccountPage;
     }
 }

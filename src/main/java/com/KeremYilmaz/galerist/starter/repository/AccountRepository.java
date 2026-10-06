@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface AccountRepository extends JpaRepository<Account,Long> {
     boolean existsByIban(String iban);
     boolean existsByAccountNo(String accountNo);
+    boolean existsByAccountNoAndIdNot(String accountNo, Long id);
+    boolean existsByIbanAndIdNot(String iban, Long id);
 }
