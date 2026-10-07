@@ -14,6 +14,7 @@ import com.KeremYilmaz.galerist.starter.exception.MessageType;
 import com.KeremYilmaz.galerist.starter.repository.CarRepository;
 import com.KeremYilmaz.galerist.starter.repository.GalleristCarRepository;
 import com.KeremYilmaz.galerist.starter.repository.GalleristRepository;
+import com.KeremYilmaz.galerist.starter.repository.SoldCarRepository;
 import com.KeremYilmaz.galerist.starter.service.IGalleristCarService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class GalleristCarServiceImpl implements IGalleristCarService {
     @Autowired
     private GalleristCarRepository galleristCarRepository;
 
+    @Autowired
+    private SoldCarRepository soldCarRepository;
+
     private GalleristCar createGalleristCar(DtoGalleristCarIU dtoGalleristCarIU) {
         GalleristCar galleristCar = new GalleristCar();
         galleristCar.setCreateTime(new Date());
@@ -46,6 +50,14 @@ public class GalleristCarServiceImpl implements IGalleristCarService {
         Optional<Car> optionalCar = carRepository.findById(dtoGalleristCarIU.getCarId());
         if (optionalCar.isEmpty()){
             throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , dtoGalleristCarIU.getCarId().toString()));
+        }
+
+        if(galleristCarRepository.existsByCarId(dtoGalleristCarIU.getCarId())){
+            throw new BaseException(new ErrorMessage(MessageType.CAR_ALREADY_IN_GALLERY , dtoGalleristCarIU.getCarId().toString()));
+        }
+
+        if(soldCarRepository.existsByCarId(dtoGalleristCarIU.getCarId())){
+            throw new BaseException(new ErrorMessage(MessageType.CAR_IS_ALREADY_SOLD , dtoGalleristCarIU.getCarId().toString()));
         }
 
         galleristCar.setCar(optionalCar.get());
@@ -73,5 +85,22 @@ public class GalleristCarServiceImpl implements IGalleristCarService {
         dtoGalleristCar.setDtoCar(dtoCar);
         dtoGalleristCar.setDtoGallerist(dtoGallerist);
         return dtoGalleristCar;
+    }
+
+    @Override
+    public Boolean deleteGalleristCar(Long id) {
+        Optional<GalleristCar> optionalGalleristCar = galleristCarRepository.findById(id);
+
+        if(optionalGalleristCar.isEmpty()){
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST , id.toString()));
+        }
+
+        Long carId = optionalGalleristCar.get().getCar().getId();
+        if(soldCarRepository.existsByCarId(carId)){
+            throw new BaseException(new ErrorMessage(MessageType.CAR_IS_ALREADY_SOLD , carId.toString()));
+        }
+
+        galleristCarRepository.delete(optionalGalleristCar.get());
+        return true;
     }
 }

@@ -6,4 +6,6 @@ import com.KeremYilmaz.galerist.starter.dto.IU.DtoGalleristCarIU;
 public interface IGalleristCarService {
 
     public DtoGalleristCar saveGalleristCar(DtoGalleristCarIU dtoGalleristCarIU);
+
+    public Boolean deleteGalleristCar(Long id);
 }

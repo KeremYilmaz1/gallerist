@@ -24,6 +24,7 @@ public enum MessageType {
     ACCOUNT_NO_IN_USE("1021" , "account no başka bir hesap tarafından kullanım durumundadır"),
     INVALID_AMOUNT("1022" , "tutar geçersiz"),
     INSUFFICIENT_BALANCE("1023", "Yetersiz bakiye"),
+    CAR_ALREADY_IN_GALLERY("1024", "Araç zaten bir galeriye bağlı"),
     USERNAME_OR_PASSWORD_INVALID("1007" , "Kullanıcı adı yada şifre hatalı");
 
     private String code;
