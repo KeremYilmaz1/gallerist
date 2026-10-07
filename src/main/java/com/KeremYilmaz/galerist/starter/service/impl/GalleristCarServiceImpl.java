@@ -18,6 +18,8 @@ import com.KeremYilmaz.galerist.starter.repository.SoldCarRepository;
 import com.KeremYilmaz.galerist.starter.service.IGalleristCarService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -102,5 +104,35 @@ public class GalleristCarServiceImpl implements IGalleristCarService {
 
         galleristCarRepository.delete(optionalGalleristCar.get());
         return true;
+    }
+
+    @Override
+    public Page<DtoGalleristCar> findCarsByGalleristId(Long galleristId, Pageable pageable) {
+        if (!galleristRepository.existsById(galleristId)) {
+            throw new BaseException(new ErrorMessage(MessageType.NO_RECORD_EXIST, galleristId.toString()));
+        }
+
+        Page<GalleristCar> galleristCarPage = galleristCarRepository.findByGalleristId(galleristId, pageable);
+
+        Page<DtoGalleristCar> dtoGalleristCarPage = galleristCarPage.map(galleristCar -> {
+            DtoGalleristCar dtoGalleristCar = new DtoGalleristCar();
+            BeanUtils.copyProperties(galleristCar, dtoGalleristCar);
+
+            DtoCar dtoCar = new DtoCar();
+            BeanUtils.copyProperties(galleristCar.getCar(), dtoCar);
+            dtoGalleristCar.setDtoCar(dtoCar);
+
+            DtoGallerist dtoGallerist = new DtoGallerist();
+            BeanUtils.copyProperties(galleristCar.getGallerist(), dtoGallerist);
+
+            DtoAddress dtoAddress = new DtoAddress();
+            BeanUtils.copyProperties(galleristCar.getGallerist().getAddress(), dtoAddress);
+            dtoGallerist.setAddress(dtoAddress);
+
+            dtoGalleristCar.setDtoGallerist(dtoGallerist);
+            return dtoGalleristCar;
+        });
+
+        return dtoGalleristCarPage;
     }
 }

@@ -6,6 +6,9 @@ import com.KeremYilmaz.galerist.starter.dto.IU.DtoGalleristCarIU;
 import com.KeremYilmaz.galerist.starter.service.IGalleristCarService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,5 +28,13 @@ public class RestGallerisCarControllerImpl implements IRestGalleristCarControlle
     @Override
     public Boolean deleteGalleristCar(@PathVariable Long id) {
         return galleristCarService.deleteGalleristCar(id);
+    }
+
+    @GetMapping("/list/gallerist/{galleristId}")
+    @Override
+    public Page<DtoGalleristCar> findCarsByGalleristId(
+            @PathVariable Long galleristId,
+            @PageableDefault(size = 10, sort = "id") Pageable pageable) {
+        return galleristCarService.findCarsByGalleristId(galleristId, pageable);
     }
 }

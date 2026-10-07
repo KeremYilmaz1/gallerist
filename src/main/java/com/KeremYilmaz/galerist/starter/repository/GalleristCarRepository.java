@@ -1,6 +1,8 @@
 package com.KeremYilmaz.galerist.starter.repository;
 
 import com.KeremYilmaz.galerist.starter.entity.GalleristCar;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +12,5 @@ public interface GalleristCarRepository extends JpaRepository<GalleristCar, Long
 
     boolean existsByGalleristId(Long galleristId);
 
+    Page<GalleristCar> findByGalleristId(Long galleristId, Pageable pageable);
 }
