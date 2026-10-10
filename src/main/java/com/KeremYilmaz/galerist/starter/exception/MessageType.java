@@ -25,6 +25,7 @@ public enum MessageType {
     INVALID_AMOUNT("1022" , "tutar geçersiz"),
     INSUFFICIENT_BALANCE("1023", "Yetersiz bakiye"),
     CAR_ALREADY_IN_GALLERY("1024", "Araç zaten bir galeriye bağlı"),
+    CAR_NOT_IN_GALLERY("1025", "Araç bu galeriye ait değil"),
     USERNAME_OR_PASSWORD_INVALID("1007" , "Kullanıcı adı yada şifre hatalı");
 
     private String code;

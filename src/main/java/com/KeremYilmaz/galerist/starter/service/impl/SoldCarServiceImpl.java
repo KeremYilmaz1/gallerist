@@ -7,10 +7,7 @@ import com.KeremYilmaz.galerist.starter.enums.CarStatusType;
 import com.KeremYilmaz.galerist.starter.exception.BaseException;
 import com.KeremYilmaz.galerist.starter.exception.ErrorMessage;
 import com.KeremYilmaz.galerist.starter.exception.MessageType;
-import com.KeremYilmaz.galerist.starter.repository.CarRepository;
-import com.KeremYilmaz.galerist.starter.repository.CustomerRepository;
-import com.KeremYilmaz.galerist.starter.repository.GalleristRepository;
-import com.KeremYilmaz.galerist.starter.repository.SoldCarRepository;
+import com.KeremYilmaz.galerist.starter.repository.*;
 import com.KeremYilmaz.galerist.starter.service.ICurrencyRatesService;
 import com.KeremYilmaz.galerist.starter.service.ISoldCarService;
 import com.KeremYilmaz.galerist.starter.utils.DateUtils;
@@ -37,6 +34,9 @@ public class SoldCarServiceImpl implements ISoldCarService {
 
     @Autowired
     private SoldCarRepository soldCarRepository;
+
+    @Autowired
+    private GalleristCarRepository galleristCarRepository;
 
     @Autowired
     private ICurrencyRatesService currencyRatesService;
@@ -91,6 +91,10 @@ public class SoldCarServiceImpl implements ISoldCarService {
 
     @Override
     public DtoSoldCar buyCar(DtoSoldCarIU dtoSoldCarIU) {
+
+        if(!galleristCarRepository.existsByGalleristIdAndCarId(dtoSoldCarIU.getGalleristId(),dtoSoldCarIU.getCarId())){
+            throw new BaseException(new ErrorMessage(MessageType.CAR_NOT_IN_GALLERY , dtoSoldCarIU.getCarId().toString()));
+        }
 
         if (!checkCarStatus(dtoSoldCarIU.getCarId())){
             throw new BaseException(new ErrorMessage(MessageType.CAR_IS_ALREADY_SOLD , dtoSoldCarIU.getCarId().toString()));

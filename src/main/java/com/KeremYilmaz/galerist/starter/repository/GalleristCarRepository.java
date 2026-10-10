@@ -13,4 +13,6 @@ public interface GalleristCarRepository extends JpaRepository<GalleristCar, Long
     boolean existsByGalleristId(Long galleristId);
 
     Page<GalleristCar> findByGalleristId(Long galleristId, Pageable pageable);
+
+    boolean existsByGalleristIdAndCarId(Long galleristId, Long carId);
 }
